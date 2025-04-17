@@ -9,6 +9,11 @@ MSSQL MCP Server is a **Model Context Protocol (MCP) server** that enables secur
 
 This ensures safer database exploration, strict permission enforcement, and logging of database interactions.
 
+> **Note:** This is a fork of the original [JexinSam/mssql_mcp_server](https://github.com/JexinSam/mssql_mcp_server) repository with the following enhancements:
+> - Replaced the MSSQL ODBC driver with a more compatible alternative
+> - Added additional connection options for improved flexibility
+> - Enhanced configuration settings for better compatibility across environments
+
 ## Features
 
 - **Secure MSSQL Database Access** through environment variables
@@ -36,6 +41,16 @@ MSSQL_DATABASE=your_database
 TrustServerCertificate=yes
 Trusted_Connection=no
 ```
+
+### Connection Options
+
+This fork includes support for additional connection options not available in the original repository:
+
+* **Enhanced ODBC Driver Support**: Compatible with more recent MSSQL ODBC drivers
+* **TrustServerCertificate**: Option to trust the server certificate without validation
+* **Trusted_Connection**: Windows authentication option
+* **Connection Timeout**: Configurable connection timeout settings
+* **Encryption**: Options for encrypted connections
 
 ## Usage
 
@@ -65,6 +80,42 @@ To integrate with **Claude Desktop**, add this configuration to `claude_desktop_
   }
 }
 ```
+
+### Using Docker with Claude Desktop
+
+You can also run the MSSQL MCP Server as a Docker container. Add this configuration to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "mssql-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "MSSQL_HOST='localhost'",
+        "-e",
+        "MSSQL_USER='your_username'",
+        "-e",
+        "MSSQL_PASSWORD='your_password'",
+        "-e",
+        "MSSQL_DATABASE='your_database'",
+        "mssql_mcp_server"
+      ],
+      "env": {
+      }
+    }
+  }
+}
+```
+
+This approach allows you to:
+- Run the server in an isolated container
+- Avoid installing dependencies on your host system
+- Configure database connection parameters through environment variables
+- Create separate configurations for different databases
 
 ### Running as a Standalone Server
 
@@ -133,5 +184,5 @@ We welcome contributions! To contribute:
 ---
 
 ### Need Help?
-For any questions or issues, feel free to open a GitHub **[Issue](https://github.com/JexinSam/mssql_mcp_server/issues)** or reach out to the maintainers.
+For any questions or issues, feel free to open a GitHub **[Issue](https://github.com/chris-ryu/mssql_mcp_server/issues)** or reach out to the maintainers.
 

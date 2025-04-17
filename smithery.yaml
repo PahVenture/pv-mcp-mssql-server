@@ -1,0 +1,69 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - mssqlDriver
+      - mssqlHost
+      - mssqlUser
+      - mssqlPassword
+      - mssqlDatabase
+    properties:
+      mssqlDriver:
+        type: string
+        description: The driver for MSSQL connection.
+        default: "ODBC Driver 18 for SQL Server"
+      mssqlHost:
+        type: string
+        description: The MSSQL server host.
+      mssqlPort:
+        type: string
+        description: The MSSQL server port.
+        default: "1433"
+      mssqlUser:
+        type: string
+        description: The MSSQL user for authentication.
+      mssqlPassword:
+        type: string
+        description: The password for the MSSQL user.
+      mssqlDatabase:
+        type: string
+        description: The MSSQL database to connect to.
+      trustServerCertificate:
+        type: string
+        description: Whether to trust the server certificate (yes/no).
+        default: "yes"
+      encrypt:
+        type: string
+        description: Whether to use encryption (yes/no).
+        default: "no"
+      loginTimeout:
+        type: string
+        description: Login timeout in seconds.
+        default: "60"
+      connectionTimeout:
+        type: string
+        description: Connection timeout in seconds.
+        default: "60"
+  commandFunction:
+    # A function that produces the CLI command to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'python', 
+      args: ['-m', 'mssql_mcp_server'], 
+      env: {
+        MSSQL_DRIVER: config.mssqlDriver,
+        MSSQL_HOST: config.mssqlHost,
+        MSSQL_PORT: config.mssqlPort || "1433",
+        MSSQL_USER: config.mssqlUser,
+        MSSQL_PASSWORD: config.mssqlPassword,
+        MSSQL_DATABASE: config.mssqlDatabase,
+        TrustServerCertificate: config.trustServerCertificate || "yes",
+        Encrypt: config.encrypt || "yes",
+        LoginTimeout: config.loginTimeout || "60",
+        ConnectionTimeout: config.connectionTimeout || "60"
+      }
+    })
